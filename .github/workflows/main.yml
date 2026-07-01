@@ -39,3 +39,4 @@ jobs:
       with:
         name: NOVA-AI-Debug-APK
         path: "**/build/outputs/apk/debug/app-debug.apk"
+        
