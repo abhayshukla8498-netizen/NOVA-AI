@@ -22,11 +22,20 @@ jobs:
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v4
 
-    - name: Build Debug APK
-      run: gradle assembleDebug
+    - name: Run Build in Subfolder
+      run: |
+        if [ -f "./build.gradle.kts" ] || [ -f "./build.gradle" ]; then
+          gradle assembleDebug
+        else
+          # Agar files kisi subfolder ke andar hain toh use dhoondhein
+          SUBFOLDER=$(find . -maxdepth 2 -name "settings.gradle.kts" -o -name "settings.gradle" | head -n 1 | xargs dirname)
+          echo "Project found in subfolder: $SUBFOLDER"
+          cd $SUBFOLDER
+          gradle assembleDebug
+        fi
 
-    - name: Upload Finished APK Artifact
+    - name: Find and Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: NOVA-AI-Debug-APK
-        path: app/build/outputs/apk/debug/app-debug.apk
+        path: "**/build/outputs/apk/debug/app-debug.apk"
